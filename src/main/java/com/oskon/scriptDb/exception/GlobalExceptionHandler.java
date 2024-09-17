@@ -13,7 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 @Component
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends RuntimeException {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String DEFAULT_ERROR_MESSAGE = "Unable to process this request.";

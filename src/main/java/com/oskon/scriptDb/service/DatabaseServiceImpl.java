@@ -6,6 +6,7 @@ import com.oskon.scriptDb.dto.request.GetDatabaseTableRequest;
 import com.oskon.scriptDb.dto.TableInfo;
 import com.oskon.scriptDb.dto.request.ScriptTablesRequest;
 import com.oskon.scriptDb.exception.GlobalException;
+import com.oskon.scriptDb.service.impl.DatabaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class DatabaseService {
+public class DatabaseServiceImpl implements DatabaseService {
 
     private Connection connection;
 
@@ -44,9 +45,7 @@ public class DatabaseService {
 
     public List<TableInfo> getTableNames(GetDatabaseTableRequest databaseName) throws SQLException,RuntimeException,Exception {
         List<TableInfo> tableInfoList = new ArrayList<>();
-        if(this.connection == null || this.connection.isClosed()) {
-            throw new GlobalException(500L,"Database connection not Found !!", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        checkConnection();
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("USE " + databaseName.getTableName());
             ResultSet tablesRs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'");
@@ -76,10 +75,14 @@ public class DatabaseService {
         return tableInfoList;
     }
 
-    public Map<String, String> getCreateTableScripts(ScriptTablesRequest request) throws SQLException, RuntimeException, Exception {
-        if (this.connection == null || this.connection.isClosed()) {
-            throw new GlobalException(500L, "Database connection not Found !!", HttpStatus.INTERNAL_SERVER_ERROR);
+    private void checkConnection() throws SQLException, GlobalException {
+        if(this.connection == null || this.connection.isClosed()) {
+            throw new GlobalException(500L,"Database connection not Found !!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public Map<String, String> getCreateTableScripts(ScriptTablesRequest request) throws SQLException, RuntimeException, Exception {
+        checkConnection();
 
         Map<String, String> tableScripts = new HashMap<>();
 
@@ -131,10 +134,8 @@ public class DatabaseService {
         return tableScripts;
     }
 
-    public Map<String, List<String>> getInsertStatements(ScriptTablesRequest request) throws SQLException, RuntimeException, Exception {
-        if (this.connection == null || this.connection.isClosed()) {
-            throw new GlobalException(500L, "Database connection not Found !!", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Map<String, List<String>> getInsertStatements(ScriptTablesRequest request) throws  Exception {
+        checkConnection();
 
         Map<String, List<String>> tableInsertStatements = new HashMap<>();
 
