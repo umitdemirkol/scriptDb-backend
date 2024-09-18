@@ -1,4 +1,4 @@
-package com.oskon.scriptDb.service.impl;
+package com.oskon.scriptDb.service;
 
 import com.oskon.scriptDb.dto.TableInfo;
 import com.oskon.scriptDb.dto.request.ConnectionRequest;

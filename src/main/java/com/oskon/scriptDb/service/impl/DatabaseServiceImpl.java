@@ -1,4 +1,4 @@
-package com.oskon.scriptDb.service;
+package com.oskon.scriptDb.service.impl;
 
 import com.oskon.scriptDb.dto.ColumnInfo;
 import com.oskon.scriptDb.dto.request.ConnectionRequest;
@@ -6,7 +6,7 @@ import com.oskon.scriptDb.dto.request.GetDatabaseTableRequest;
 import com.oskon.scriptDb.dto.TableInfo;
 import com.oskon.scriptDb.dto.request.ScriptTablesRequest;
 import com.oskon.scriptDb.exception.GlobalException;
-import com.oskon.scriptDb.service.impl.DatabaseService;
+import com.oskon.scriptDb.service.DatabaseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +45,8 @@ public class DatabaseServiceImpl implements DatabaseService {
 
     public List<TableInfo> getTableNames(GetDatabaseTableRequest databaseName) throws SQLException,RuntimeException,Exception {
         List<TableInfo> tableInfoList = new ArrayList<>();
+
+        // Check database Connection
         checkConnection();
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("USE " + databaseName.getTableName());
